@@ -75,6 +75,10 @@ const StakingInterface = ({ contracts, isConnected, signer,connectionStatus }) =
       return;
     }
   
+    const loadingToast = toast({
+      title: 'Approving Tokens',
+      description: 'Please wait while your transaction is being processed...',
+    });
     console.log(isConnected, "connection");
     console.log(signer, "Signer object");
   
@@ -94,6 +98,12 @@ const StakingInterface = ({ contracts, isConnected, signer,connectionStatus }) =
   
       // Send the approve transaction
       const tx = await tokenContract.approve(STAKING_CONTRACT_ADDRESS, amount);
+
+      loadingToast.dismiss();
+      toast({
+        title: 'Transaction Submitted',
+        description: 'Waiting for confirmation...',
+      });
       if (!tx) {
         toast({ title: 'Error', description: 'Transaction failed to send!', variant: 'destructive' });
         return;
@@ -120,6 +130,11 @@ const StakingInterface = ({ contracts, isConnected, signer,connectionStatus }) =
       toast({ title: 'Approval Needed', description: 'Please approve tokens before staking!', variant: 'destructive' });
       return;
     }
+
+    const loadingToast = toast({
+      title: 'Staking Tokens',
+      description: 'Please wait while your transaction is being processed...',
+    });
   
     const stakeAmountNum = Number(stakeAmount);
     if (!stakeAmount || isNaN(stakeAmountNum) || stakeAmountNum <= 0) {
@@ -153,6 +168,11 @@ const StakingInterface = ({ contracts, isConnected, signer,connectionStatus }) =
           gasLimit: gasLimit
         });
         
+        loadingToast.dismiss();
+        toast({
+          title: 'Transaction Submitted',
+          description: 'Waiting for confirmation...',
+        });
         console.log("Transaction sent:", tx.hash);
         
         const txReceipt = await tx.wait();
@@ -187,6 +207,11 @@ const StakingInterface = ({ contracts, isConnected, signer,connectionStatus }) =
     }
   };
   const handleWithdraw = async () => {
+    const loadingToast = toast({
+      title: 'Withdrawing Tokens',
+      description: 'Please wait while your transaction is being processed...',
+    });
+
     const withdrawAmountNum = Number(withdrawalAmount);
     if (!withdrawalAmount || isNaN(withdrawAmountNum) || withdrawAmountNum <= 0) {
       toast({ title: 'Invalid Amount', description: 'Please enter a valid withdrawal amount.', variant: 'destructive' });
@@ -226,6 +251,12 @@ const StakingInterface = ({ contracts, isConnected, signer,connectionStatus }) =
    
         const tx = await stakingContract.withdrawStakedTokens(amount, {
           gasLimit: gasLimit
+        });
+
+        loadingToast.dismiss();
+        toast({
+          title: 'Transaction Submitted',
+          description: 'Waiting for confirmation...',
         });
         
         console.log("Transaction sent:", tx.hash);

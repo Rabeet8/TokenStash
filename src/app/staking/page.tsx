@@ -19,6 +19,7 @@ const Staking = () => {
     tokenContract: null
   });
 
+  
   const STAKING_CONTRACT_ADDRESS = "0x240CbABDBaff70D9a1113697031d19e07CdeC068";
   const STAKING_TOKEN_ADDRESS = "0xa911093Ff62E7378b6Acb22D8abc61D13E927c97";
 

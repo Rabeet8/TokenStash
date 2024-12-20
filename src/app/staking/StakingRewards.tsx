@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React,{useEffect,useState} from "react";
 import { ethers } from 'ethers';
 import { useToast } from "@/hooks/use-toast"
@@ -100,7 +100,10 @@ const StakingRewards = ({ contracts, isConnected, signer,connectionStatus }) => 
   },  [contracts, signer, isConnected]);
   const claimRewards = async () => {
     
-  
+    const loadingToast = toast({
+      title: 'Claiming Rewards',
+      description: 'Please wait while your transaction is being processed...',
+    });
       // Get the address of the current user (signer)
       const address = signer.account.address;
       console.log(`Claiming rewards for address: ${address}`);
@@ -115,7 +118,11 @@ const StakingRewards = ({ contracts, isConnected, signer,connectionStatus }) => 
       // Estimate gas for the transaction
       const tx= await contracts.stakingContract.getReward();
     
-  
+      loadingToast.dismiss();
+      toast({
+        title: 'Transaction Submitted',
+        description: 'Waiting for confirmation...',
+      });
       // Wait for the transaction to be mined
       const receipt = await tx.wait();
   
@@ -123,8 +130,18 @@ const StakingRewards = ({ contracts, isConnected, signer,connectionStatus }) => 
         console.log('Rewards successfully claimed.');
         // You can update the state or UI based on the claim's success
         fetchEarnedAndStakedBalance();
+        toast({
+          title: 'Success',
+          description: 'Rewards successfully claimed!',
+          variant: 'success',
+        });
       } else {
         console.error('Transaction failed.');
+        toast({
+          title: 'Error',
+          description: 'Transaction failed',
+          variant: 'destructive',
+        });
       }
     // } catch (error) {
     //   if (error.code === 'CALL_EXCEPTION') {
@@ -182,136 +199,3 @@ const StakingRewards = ({ contracts, isConnected, signer,connectionStatus }) => 
 export default StakingRewards;
 
 
-// return (
-//   <div className="max-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden mt-10">
-//     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-//       {[...Array(100)].map((_, i) => (
-//         <div 
-//           key={i} 
-//           className="absolute bg-gradient-to-r from-blue-200 to-cyan-200 rounded-full opacity-20 animate-[float_10s_infinite]"
-//           style={{
-//             width: `${Math.random() * 10 + 2}px`,
-//             height: `${Math.random() * 10 + 2}px`,
-//             left: `${Math.random() * 120 - 10}%`,
-//             top: `${Math.random() * 120 - 10}%`,
-//             animationDelay: `${Math.random() * 10}s`,
-//             transform: `rotate(${Math.random() * 360}deg)`
-//           }}
-//         />
-//       ))}
-//     </div>
-
-//     <Card 
-//       ref={cardRef}
-//       className="w-full max-w-md z-10 shadow-2xl border-2 border-gray-100 rounded-3xl overflow-hidden relative"
-//     >
-//       <div 
-//         className="absolute -inset-1 bg-gradient-to-r opacity-20 blur-2xl animate-pulse"
-//         style={{
-//           backgroundPosition: `${mousePosition.x}px ${mousePosition.y}px`
-//         }}
-//       ></div>
-      
-//       <Tabs 
-//         defaultValue="stake" 
-//         value={activeTab}
-//         onValueChange={setActiveTab}
-//         className="relative"
-//       >
-//         <div className="relative z-10">
-//           <TabsList className="grid grid-cols-2 bg-transparent p-0 relative">
-//             <TabsTrigger 
-//               ref={tabRefStake}
-//               value="stake" 
-//               className={`relative py-4 font-bold text-lg z-10 ${activeTab === 'stake' ? 'text-black' : 'text-gray-400'} transition-colors duration-300`}
-//             >
-//               <Flame className="mr-2 animate-[wiggle_1s_ease-in-out_infinite]" />
-//               Stake Token
-//             </TabsTrigger>
-//             <TabsTrigger 
-//               ref={tabRefWithdraw}
-//               value="withdraw" 
-//               className={`relative py-4 font-bold text-lg z-10 ${activeTab === 'withdraw' ? 'text-black' : 'text-gray-400'} transition-colors duration-300`}
-//             >
-//               <ArrowUpDown className="mr-2 animate-[wiggle_1s_ease-in-out_infinite]" />
-//               Withdrawal
-//             </TabsTrigger>
-//           </TabsList>
-
-//           <div 
-//             className="absolute bottom-0 h-1 bg-blue-500 transition-all duration-300" 
-//             style={tabUnderlineStyle}
-//           />
-//         </div>
-
-//         <TabsContent value="stake" className="p-6 relative z-10 rounded-2xl">
-//           <div className="space-y-6">
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700 mb-2">
-//                 Token Approval
-//               </label>
-//               <Input 
-//                 type="number" 
-//                 placeholder="Enter approval amount"
-//                 value={tokenApproval}
-//                 onChange={(e) => setTokenApproval(e.target.value)}
-//                 className="border-2 border-gray-200 rounded-lg p-3"
-//               />
-//               <Button 
-//                 onClick={handleApproveTokens} 
-//                 disabled={loading || !tokenApproval}
-//                 className="mt-4"
-//               >
-//                 {loading ? 'Approving...' : 'Approve Tokens'}
-//               </Button>
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700 mb-2">
-//                 Stake Amount
-//               </label>
-//               <Input 
-//                 type="number" 
-//                 placeholder="Enter stake amount"
-//                 value={stakeAmount}
-//                 onChange={(e) => setStakeAmount(e.target.value)}
-//                 className="border-2 border-gray-200 rounded-lg p-3"
-//               />
-//               <Button 
-//                 onClick={handleStake} 
-//                 disabled={loading || !stakeAmount || !isApproved}
-//                 className="mt-4"
-//               >
-//                 {loading ? 'Staking...' : 'Stake Tokens'}
-//               </Button>
-//             </div>
-//           </div>
-//         </TabsContent>
-
-//         <TabsContent value="withdraw" className="p-6 relative z-10 rounded-2xl">
-//           <div className="space-y-6">
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700 mb-2">
-//                 Withdraw Amount
-//               </label>
-//               <Input 
-//                 type="number" 
-//                 placeholder="Enter withdrawal amount"
-//                 value={withdrawalAmount}
-//                 onChange={(e) => setWithdrawalAmount(e.target.value)}
-//                 className="border-2 border-gray-200 rounded-lg p-3"
-//               />
-//               <Button 
-//                 onClick={handleWithdraw} 
-//                 disabled={loading || !withdrawalAmount}
-//                 className="mt-4"
-//               >
-//                 {loading ? 'Withdrawing...' : 'Withdraw Tokens'}
-//               </Button>
-//             </div>
-//           </div>
-//         </TabsContent>
-//       </Tabs>
-//     </Card>
-//   </div>
-// );
