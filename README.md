@@ -1,4 +1,4 @@
-# 🌟 ERC20 Token Staking DApp
+# 🌟 TokenStash
 
 A decentralized application (DApp) for staking ERC20 tokens and earning rewards using smart contracts on the Ethereum blockchain.
 
